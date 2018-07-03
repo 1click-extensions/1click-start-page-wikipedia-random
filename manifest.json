@@ -1,15 +1,14 @@
 {
     "name": "__MSG_ext_name__",
     "short_name": "__MSG_ext_name__",
-    "version": "1.0",
+    "version": "1.0.2",
     "description": "__MSG_ext_desc__",
     "permissions": [
         "activeTab"
     ],
     "background": {
         "scripts": [
-            "js/rank-listener.js",
-            "background.js"
+            "js/rank-listener.js"
         ],
         "persistent": false
     },
@@ -17,6 +16,9 @@
         "default_icon": "images/browseraction.png",
         "default_title": "__MSG_browser_action__"
     },
+    "chrome_url_overrides" : {
+        "newtab": "pages/redirect.html"
+      },
     "offline_enabled": true,
     "default_locale": "en",
     "icons": {

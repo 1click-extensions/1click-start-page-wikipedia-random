@@ -124,16 +124,16 @@ button.btn-popup.no-thanks {
 	`)
 }
 
-function checkIfRankNeededAndAndAddRank() {
+function checkIfRankNeededAndAndAddRank(callbackIfNot) {
   checkIfRankNeeded(function() {
     oneClickPopupHtmlToBody(null)
 
     chrome.runtime.sendMessage({
       action: "rankRequested",
     })
-  })
+  },callbackIfNot)
 }
-function checkIfRankNeeded(callback) {
+function checkIfRankNeeded(callback, callbackIfNot) {
   chrome.runtime.sendMessage(
     {
       action: "checkIfNeedRating",
@@ -141,6 +141,9 @@ function checkIfRankNeeded(callback) {
     function(ratingNeeded) {
       if (ratingNeeded) {
         callback()
+      }
+      else if('function' == typeof callbackIfNot){
+        callbackIfNot();
       }
     },
   )
@@ -150,6 +153,9 @@ function removeRateRequest() {
   var popup = document.getElementsByClassName("pleaseRate")[0]
   if (popup) {
     popup.parentElement.removeChild(popup)
+  }
+  if('function' == typeof afterRemoveRateRequest){
+    afterRemoveRateRequest();
   }
 }
 //console.log(typeof openRankPopupWhenPossible );

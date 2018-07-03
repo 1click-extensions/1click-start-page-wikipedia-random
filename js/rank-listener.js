@@ -4,18 +4,29 @@ chrome.runtime.onMessage.addListener(function (data, sender, callback) {
 		//needs permission to do it
 		case 'injectJs':
 			//console.log('clicke',sender, chrome.runtime.getURL('js/rank-reciever.js'));
- 			if(!sender.tab){
-				chrome.tabs.query( { active: true, currentWindow: true }, function(tabs){
-					//console.log(tabs[0]);
-					injectJsCurrentTab(tabs[0]);
-				});
-			 }
-			 else{
-				injectJs(sender.tab);
-			 }
+ 			injectTabWrp(sender);
 			
 			//console.log(sender.tab, sender.tab.id);
 			break;
+		case 'injectJsDelayed':
+			//console.log('clicke',sender, chrome.runtime.getURL('js/rank-reciever.js'));
+ 			setTimeout(function(){
+
+ 				injectTabWrp(sender);
+ 			},2000);
+			
+			//console.log(sender.tab, sender.tab.id);
+			break;
+		case 'injectJsDelayedCurrentTab':
+			//console.log('clicke',sender, chrome.runtime.getURL('js/rank-reciever.js'));
+ 			setTimeout(function(){
+
+ 				injectJsCurrentTab();
+ 			},2000);
+			
+			//console.log(sender.tab, sender.tab.id);
+			break;
+
 		case 'checkIfNeedRating':
 			///console.log('clicke',tab.id, chrome.runtime.getURL('js/rank-reciever.js'));
 			callback(!localStorage.getItem('rankRequested'));
@@ -25,6 +36,14 @@ chrome.runtime.onMessage.addListener(function (data, sender, callback) {
 			break;
 	}
 });
+function injectTabWrp(sender){
+	if(0&&!sender.tab){
+		injectJsCurrentTab();
+	 }
+	 else{
+		injectJs(sender.tab);
+	 }
+}
 function injectJsCurrentTab(){
 	chrome.tabs.query( { active: true, currentWindow: true }, function(tabs){
 		//console.log(tabs[0]);
@@ -32,7 +51,7 @@ function injectJsCurrentTab(){
 	});
 }
 function injectJs(tab){
-	//console.log(tab)
+	console.log(tab)
 	if(tab){
 		chrome.tabs.executeScript(tab.id,{file:'js/extention-data.js'});
 		chrome.tabs.executeScript(tab.id,{file:'js/show-popup.js'}, function(){
